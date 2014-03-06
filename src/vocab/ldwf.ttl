@@ -1,0 +1,35 @@
+# -*- ttl -*-
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix ldwf: <http://vocab-ld.org/ldwf#> .
+
+
+ldfw:callback
+    rdf:type rdf:Property ;
+    rdf:range ldfw:Callback ;
+    rdfs:comment "The URI of the response graph callback.  For example <urn:python:ldwf.examples.hello.index>" .
+
+
+ldwf:Callback
+    rdf:type rdfs:Class ;
+    rdfs:comment "The class for a callback object" .
+
+    
+ldwf:BuiltInCallback
+    rdf:type ldwf:Callback ;
+    rdfs:label "Built-in Callback" ;
+    rdfs:comment "callbacks of this type are expected to be built-in to the implementation of the LDWF on a platform." .
+
+    
+ldwf:State
+    rdfs:subClassOf hydra:Class ;
+    rdfs:comment "A class that describes a user state in the service" .
+
+
+ldwf:echoCallback 
+    rdf:type ldwf:BuiltInCallback ;
+    rdfs:comment 
+    "This callback is provided by the ldwf.  The ldwf:echoCallback echo's the request graph to the response graph.
+Useful for static ldwf:State declared in the service graph" .
+        
