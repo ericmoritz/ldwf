@@ -1,0 +1,149 @@
+@prefix weather: <http://vocab-ld.org/ldwf/weather#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix ldwf: <http://vocab-ld.org/ldwf#> .
+@prefix xhtml: <http://www.w3.org/1999/xhtml#> .
+@prefix schema: <http://schema.org/> .
+@prefix dbpedia: <http://dbpedia.org/resource/> .
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
+
+###===================================================================
+### User States
+###===================================================================
+
+weather:PickingALocationState 
+    rdfs:subClassOf ldwf:State ;
+    rdfs:label "Picking a Location"
+    rdfs:comment "This is the state the user is in when picking a state" .
+
+
+weather:locationChoices 
+    rdfs:type rdf:Property ;
+    rdfs:label "Location Choices" ;
+    rdfs:domain weather:PickingALocationState ;
+    rdfs:range hydra:Collection ;
+    rdfs:comment "A collection of location choices" .
+
+
+weather:ViewingCurrentConditionsState
+    rdfs:subClassOf ldwf:State ;
+    rdfs:label "Viewing Current Conditions State" ;
+    rdfs:comment "The user is in the state of viewing the current conditions" .
+
+
+weather:ViewingForecastState
+    rdfs:subClassOf ldwf:State ;
+    rdfs:label "Viewing Forecast State" ;
+    rdfs:comment "The user is in the state of viewing a forecast" .
+
+    
+weather:ViewingWeatherSummary 
+    rdfs:subClassOf ldwf:State ;
+    rdfs:label "Viewing weather summary"
+
+###===================================================================
+### Actions (user state transitions)
+###===================================================================
+
+weather:viewSummary 
+    rdf:type hydra:Link ;
+    rdfs:range weather:ViewingWeatherSummary ;
+    rdfs:label "view weather summary" ;
+    rdfs:comment "View the weather summary" .
+    
+
+weather:viewCurrentConditions 
+    rdf:type hydra:Link ;
+    rdfs:range weather:ViewingCurrentConditionsState ;
+    rdfs:label "view current conditions" ;
+    rdfs:comment "Following this link will lead someone to the 'Viewing Current Conditions State'" .
+
+
+weather:viewForecast 
+    rdf:type hydra:Link ;
+    rdfs:domain weather:LocationChoice ;
+    rdfs:range weather:ViewingForecastState ;
+    rdfs:label "view forecast"@en ;
+    rdfs:comment "Following this link will lead someone to the 'Viewing Forecast State'" .
+
+
+weather:pickLocation
+    rdf:type hydra:TemplatedLink ;
+    rdfs:domain weather:LocationChoice ;
+    rdfs:range weather:PickingALocationState ;
+    rdfs:label "find location"@en ;
+    rdfs:comment "Filling out this form will lead someone to the 'Picking a location state'" .
+     
+
+###===================================================================
+### General classes
+###===================================================================
+
+weather:LocationChoice
+    rdfs:subClassOf schema:PostalAddress ;
+    rdfs:label "location choice" ;
+    rdfs:comment "Classifies an object as a weather location choice" .
+
+    
+weather:LocationChoiceCollection 
+    rdfs:subClassOf hydra:Collection .
+    
+
+
+
+###===================================================================
+### Individuals
+###===================================================================
+</> 
+    rdf:type hydra:ApiDocumentation ;
+    xhtml:start </> ;
+    weather:pickLocation weather:pickLocationTemplate ;
+    ldwf:callback ldwf:echoCallback ;
+    rdfs:label "Service docs" ;
+    rdfs:comment "These are the possible state transitions of the weather services" .
+
+
+weather:pickLocationTemplate 
+    rdf:type hydra:IriTemplate ;
+    rdfs:label "pick location template"@en ;
+    rdfs:comment "use this template to transition to the state of 'picking a location'"@en ;
+    hydra:template "/search{?q}" ;
+    hydra:mapping _:freeTextSearchMapping ;
+
+
+_:freeTextSearchMapping
+    rdfs:type hydra:IriTemplateMapping ;
+    hydra:variable "q"
+    hydra:property hydra:freetextQuery .
+    
+
+weather:currentConditionsTemplate
+    rdf:type hydra:IriTemplate ;
+    rdfs:label "current conditions"@en ;
+    rdfs:comment "Template used to transition to the state of 'viewing current conditions'"@en ;
+    hydra:template "/current-conditions/{locationId}" ;
+    hydra:mapping _:locationIdMapping .
+    
+
+weather:currentConditionsTemplate
+    rdf:type hydra:IriTemplate ;
+    rdfs:label "current conditions"@en ;
+    rdfs:comment "Template used to transition to the state of 'viewing current conditions'"@en ;
+    hydra:template "/forecast/{locationId}" ;
+    hydra:mapping _:locationIdMapping .
+
+weather:currentConditionsTemplate
+    rdf:type hydra:IriTemplate ;
+    rdfs:label "current conditions"@en ;
+    rdfs:comment "Template used to transition to the state of 'viewing current conditions'"@en ;
+    hydra:template "/summary/{locationId}" ;
+    hydra:mapping _:locationIdMapping .
+    
+
+_:locationIdMapping
+    rdfs:type hydra:IriTemplateMapping ;
+    hydra:variable "locationId" ;
+    hydra:property weather:locationChoiceString .
+    
+
